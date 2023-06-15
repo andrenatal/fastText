@@ -404,45 +404,35 @@ void Autotune::train(const Args& autotuneArgs) {
     printArgs(trainArgs, autotuneArgs);
     ElapsedTimeMarker elapsedTimeMarker;
     double currentScore = std::numeric_limits<double>::quiet_NaN();
-    try {
-      fastText_->train(trainArgs);
-      bool sizeConstraintOK = quantize(trainArgs, autotuneArgs);
-      if (sizeConstraintOK) {
-        const auto& metricLabel = autotuneArgs.getAutotuneMetricLabel();
-        Meter meter(!metricLabel.empty());
-        fastText_->test(
-            validationFileStream, autotuneArgs.autotunePredictions, 0.0, meter);
+    fastText_->train(trainArgs);
+    bool sizeConstraintOK = quantize(trainArgs, autotuneArgs);
+    if (sizeConstraintOK) {
+      const auto& metricLabel = autotuneArgs.getAutotuneMetricLabel();
+      Meter meter(!metricLabel.empty());
+      fastText_->test(
+          validationFileStream, autotuneArgs.autotunePredictions, 0.0, meter);
 
-        currentScore = getMetricScore(
-            meter,
-            autotuneArgs.getAutotuneMetric(),
-            autotuneArgs.getAutotuneMetricValue(),
-            metricLabel);
+      currentScore = getMetricScore(
+          meter,
+          autotuneArgs.getAutotuneMetric(),
+          autotuneArgs.getAutotuneMetricValue(),
+          metricLabel);
 
-        if (bestScore_ == kUnknownBestScore || (currentScore > bestScore_)) {
-          bestTrainArgs = trainArgs;
-          bestScore_ = currentScore;
-          strategy_->updateBest(bestTrainArgs);
-        }
-      } else {
-        sizeConstraintFailed_++;
-        if (!sizeConstraintWarning && trials_ > 10 &&
-            sizeConstraintFailed_ > (trials_ / 2)) {
-          sizeConstraintWarning = true;
-          std::cerr << std::endl
-                    << "Warning : requested model size is probably too small. "
-                       "You may want to increase `autotune-modelsize`."
-                    << std::endl;
-        }
+      if (bestScore_ == kUnknownBestScore || (currentScore > bestScore_)) {
+        bestTrainArgs = trainArgs;
+        bestScore_ = currentScore;
+        strategy_->updateBest(bestTrainArgs);
       }
-    } catch (DenseMatrix::EncounteredNaNError&) {
-      // ignore diverging loss and go on
-    } catch (std::bad_alloc&) {
-      // ignore parameter samples asking too much memory
-    } catch (TimeoutError&) {
-      break;
-    } catch (FastText::AbortError&) {
-      break;
+    } else {
+      sizeConstraintFailed_++;
+      if (!sizeConstraintWarning && trials_ > 10 &&
+          sizeConstraintFailed_ > (trials_ / 2)) {
+        sizeConstraintWarning = true;
+        std::cerr << std::endl
+                  << "Warning : requested model size is probably too small. "
+                      "You may want to increase `autotune-modelsize`."
+                  << std::endl;
+      }
     }
     LOG_VAL_NAN(currentScore, currentScore)
     LOG_VAL(train took, elapsedTimeMarker.getElapsed())

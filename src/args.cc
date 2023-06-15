@@ -123,103 +123,97 @@ void Args::parseArgs(const std::vector<std::string>& args) {
       printHelp();
       exit(EXIT_FAILURE);
     }
-    try {
-      setManual(args[ai].substr(1));
+    setManual(args[ai].substr(1));
 
-      if (args[ai] == "-h") {
-        std::cerr << "Here is the help! Usage:" << std::endl;
-        printHelp();
-        exit(EXIT_FAILURE);
-      } else if (args[ai] == "-input") {
-        input = std::string(args.at(ai + 1));
-      } else if (args[ai] == "-output") {
-        output = std::string(args.at(ai + 1));
-      } else if (args[ai] == "-lr") {
-        lr = std::stof(args.at(ai + 1));
-      } else if (args[ai] == "-lrUpdateRate") {
-        lrUpdateRate = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-dim") {
-        dim = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-ws") {
-        ws = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-epoch") {
-        epoch = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-minCount") {
-        minCount = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-minCountLabel") {
-        minCountLabel = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-neg") {
-        neg = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-wordNgrams") {
-        wordNgrams = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-loss") {
-        if (args.at(ai + 1) == "hs") {
-          loss = loss_name::hs;
-        } else if (args.at(ai + 1) == "ns") {
-          loss = loss_name::ns;
-        } else if (args.at(ai + 1) == "softmax") {
-          loss = loss_name::softmax;
-        } else if (
-            args.at(ai + 1) == "one-vs-all" || args.at(ai + 1) == "ova") {
-          loss = loss_name::ova;
-        } else {
-          std::cerr << "Unknown loss: " << args.at(ai + 1) << std::endl;
-          printHelp();
-          exit(EXIT_FAILURE);
-        }
-      } else if (args[ai] == "-bucket") {
-        bucket = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-minn") {
-        minn = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-maxn") {
-        maxn = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-thread") {
-        thread = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-t") {
-        t = std::stof(args.at(ai + 1));
-      } else if (args[ai] == "-label") {
-        label = std::string(args.at(ai + 1));
-      } else if (args[ai] == "-verbose") {
-        verbose = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-pretrainedVectors") {
-        pretrainedVectors = std::string(args.at(ai + 1));
-      } else if (args[ai] == "-saveOutput") {
-        saveOutput = true;
-        ai--;
-      } else if (args[ai] == "-seed") {
-        seed = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-qnorm") {
-        qnorm = true;
-        ai--;
-      } else if (args[ai] == "-retrain") {
-        retrain = true;
-        ai--;
-      } else if (args[ai] == "-qout") {
-        qout = true;
-        ai--;
-      } else if (args[ai] == "-cutoff") {
-        cutoff = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-dsub") {
-        dsub = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-autotune-validation") {
-        autotuneValidationFile = std::string(args.at(ai + 1));
-      } else if (args[ai] == "-autotune-metric") {
-        autotuneMetric = std::string(args.at(ai + 1));
-        getAutotuneMetric(); // throws exception if not able to parse
-        getAutotuneMetricLabel(); // throws exception if not able to parse
-      } else if (args[ai] == "-autotune-predictions") {
-        autotunePredictions = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-autotune-duration") {
-        autotuneDuration = std::stoi(args.at(ai + 1));
-      } else if (args[ai] == "-autotune-modelsize") {
-        autotuneModelSize = std::string(args.at(ai + 1));
+    if (args[ai] == "-h") {
+      std::cerr << "Here is the help! Usage:" << std::endl;
+      printHelp();
+      exit(EXIT_FAILURE);
+    } else if (args[ai] == "-input") {
+      input = std::string(args.at(ai + 1));
+    } else if (args[ai] == "-output") {
+      output = std::string(args.at(ai + 1));
+    } else if (args[ai] == "-lr") {
+      lr = std::stof(args.at(ai + 1));
+    } else if (args[ai] == "-lrUpdateRate") {
+      lrUpdateRate = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-dim") {
+      dim = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-ws") {
+      ws = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-epoch") {
+      epoch = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-minCount") {
+      minCount = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-minCountLabel") {
+      minCountLabel = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-neg") {
+      neg = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-wordNgrams") {
+      wordNgrams = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-loss") {
+      if (args.at(ai + 1) == "hs") {
+        loss = loss_name::hs;
+      } else if (args.at(ai + 1) == "ns") {
+        loss = loss_name::ns;
+      } else if (args.at(ai + 1) == "softmax") {
+        loss = loss_name::softmax;
+      } else if (
+          args.at(ai + 1) == "one-vs-all" || args.at(ai + 1) == "ova") {
+        loss = loss_name::ova;
       } else {
-        std::cerr << "Unknown argument: " << args[ai] << std::endl;
+        std::cerr << "Unknown loss: " << args.at(ai + 1) << std::endl;
         printHelp();
         exit(EXIT_FAILURE);
       }
-    } catch (std::out_of_range) {
-      std::cerr << args[ai] << " is missing an argument" << std::endl;
+    } else if (args[ai] == "-bucket") {
+      bucket = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-minn") {
+      minn = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-maxn") {
+      maxn = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-thread") {
+      thread = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-t") {
+      t = std::stof(args.at(ai + 1));
+    } else if (args[ai] == "-label") {
+      label = std::string(args.at(ai + 1));
+    } else if (args[ai] == "-verbose") {
+      verbose = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-pretrainedVectors") {
+      pretrainedVectors = std::string(args.at(ai + 1));
+    } else if (args[ai] == "-saveOutput") {
+      saveOutput = true;
+      ai--;
+    } else if (args[ai] == "-seed") {
+      seed = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-qnorm") {
+      qnorm = true;
+      ai--;
+    } else if (args[ai] == "-retrain") {
+      retrain = true;
+      ai--;
+    } else if (args[ai] == "-qout") {
+      qout = true;
+      ai--;
+    } else if (args[ai] == "-cutoff") {
+      cutoff = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-dsub") {
+      dsub = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-autotune-validation") {
+      autotuneValidationFile = std::string(args.at(ai + 1));
+    } else if (args[ai] == "-autotune-metric") {
+      autotuneMetric = std::string(args.at(ai + 1));
+      getAutotuneMetric(); // throws exception if not able to parse
+      getAutotuneMetricLabel(); // throws exception if not able to parse
+    } else if (args[ai] == "-autotune-predictions") {
+      autotunePredictions = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-autotune-duration") {
+      autotuneDuration = std::stoi(args.at(ai + 1));
+    } else if (args[ai] == "-autotune-modelsize") {
+      autotuneModelSize = std::string(args.at(ai + 1));
+    } else {
+      std::cerr << "Unknown argument: " << args[ai] << std::endl;
       printHelp();
       exit(EXIT_FAILURE);
     }
@@ -474,11 +468,8 @@ int64_t Args::getAutotuneModelSize() const {
   uint64_t size = 0;
   size_t nonNumericCharacter = 0;
   bool parseError = false;
-  try {
-    size = std::stol(modelSize, &nonNumericCharacter);
-  } catch (std::invalid_argument&) {
-    parseError = true;
-  }
+  size = std::stol(modelSize, &nonNumericCharacter);
+
   if (!parseError && nonNumericCharacter != modelSize.size()) {
     parseError = true;
   }
